@@ -8,7 +8,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
-    List<Transaction> toListTransactionDto(List<Transaction> transactions);
 
-    FullTransactionDto toFullDto(Transaction transactions);
+    FullTransactionDto toFullDto(Transaction transaction);
+
+    List<FullTransactionDto> toFullDtoList(List<Transaction> transactions);
 }

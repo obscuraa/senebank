@@ -1,5 +1,6 @@
 package com.group.senebank.dto.account;
 
+import com.group.senebank.dto.users.FullUserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,4 +15,6 @@ import lombok.Setter;
 public class FullAccountDto {
     private int id;
     private boolean isOverdraft;
+    private int balance;
+    private FullUserDto user;
 }

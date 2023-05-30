@@ -2,7 +2,6 @@ package com.group.senebank.controller;
 
 import com.group.senebank.dto.transaction.FullTransactionDto;
 import com.group.senebank.mapper.TransactionMapper;
-import com.group.senebank.model.Transaction;
 import com.group.senebank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,18 +19,18 @@ public class AdminController {
     private final TransactionService transactionService;
     private final TransactionMapper transactionMapper;
 
-    @GetMapping
-    public List<Transaction> getTransactions() {
-        return transactionMapper.toListTransactionDto(transactionService.getTransactions());
+    @GetMapping(path = "/transactionList")
+    public List<FullTransactionDto> getTransactions() {
+        return transactionMapper.toFullDtoList(transactionService.getTransactions());
     }
 
-    @GetMapping(path = "/{userId}")
-    public FullTransactionDto findTransactionsByUserId(@PathVariable("userId") UUID userId) {
-        return transactionMapper.toFullDto((Transaction) transactionService.getTransactionsByUserId(userId));
+    @GetMapping(path = "/user/{userId}")
+    public List<FullTransactionDto> findTransactionsByUserId(@PathVariable("userId") UUID userId) {
+        return transactionMapper.toFullDtoList(transactionService.getTransactionsByUserId(userId));
     }
 
-    @GetMapping(path = "/{accountId}")
-    public FullTransactionDto findTransactionsByAccountId(@PathVariable("accountId") int accountId) {
-        return transactionMapper.toFullDto((Transaction) transactionService.getTransactionsByAccountId(accountId));
+    @GetMapping(path = "/account/{accountId}")
+    public List<FullTransactionDto>findTransactionsByAccountId(@PathVariable("accountId") int accountId) {
+        return transactionMapper.toFullDtoList(transactionService.getTransactionsByAccountId(accountId));
     }
 }

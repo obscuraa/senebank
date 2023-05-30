@@ -5,7 +5,7 @@ import com.group.senebank.model.Account;
 import java.util.UUID;
 
 public interface AccountService {
-    Account getAccount(int id);
+    Account getAccountById(int id);
 
     Account addAccount(UUID userId);
 

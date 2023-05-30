@@ -1,5 +1,6 @@
 package com.group.senebank.dto.transaction;
 
+import com.group.senebank.dto.account.FullAccountDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,4 +15,6 @@ import lombok.Setter;
 public class FullTransactionDto {
     private int id;
     private String payload;
+    private FullAccountDto sourceAccount;
+    private FullAccountDto targetAccount;
 }

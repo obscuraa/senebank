@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class FullUsersDto {
+public class FullUserDto {
     private UUID id;
     private String email;
     private String password;

@@ -1,7 +1,8 @@
 package com.group.senebank.controller;
 
+import com.group.senebank.dto.users.AuthorizeUserDto;
 import com.group.senebank.dto.users.CreateUserDto;
-import com.group.senebank.dto.users.FullUsersDto;
+import com.group.senebank.dto.users.FullUserDto;
 import com.group.senebank.mapper.UsersMapper;
 import com.group.senebank.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,26 +13,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/user")
 @RequiredArgsConstructor
 public class UsersController {
     private final UserService userService;
     private final UsersMapper usersMapper;
 
-    public void authorizeUser(){
-
+    @PostMapping(path = "/authorize")
+    public String authorizeUser(@RequestBody AuthorizeUserDto authorizeUserDto) {
+        return userService.authorizeUser(authorizeUserDto);
     }
 
-    @PostMapping
-    public FullUsersDto addUser(@RequestBody CreateUserDto createUserDto){
-        return usersMapper.toFullDto(userService.addUser(createUserDto));
+    @PostMapping(path = "/register")
+    public FullUserDto registerUser(@RequestBody CreateUserDto createUserDto, HttpServletResponse response) {
+        return usersMapper.toFullDto(userService.registerUser(createUserDto, response));
     }
 
-    @DeleteMapping(path = "{usersId}")
-    public void deleteUser(@PathVariable("usersId") UUID userId){
+    @DeleteMapping(path = "/{userId}")
+    public void deleteUser(@PathVariable("userId") UUID userId){
         userService.deleteUser(userId);
     }
 }

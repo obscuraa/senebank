@@ -1,16 +1,20 @@
 package com.group.senebank.service;
 
+import com.group.senebank.dto.users.AuthorizeUserDto;
 import com.group.senebank.dto.users.CreateUserDto;
 import com.group.senebank.model.User;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 public interface UserService {
-    User addUser(CreateUserDto createUserDto);
+    User registerUser(CreateUserDto createUserDto, HttpServletResponse response);
 
-    User findUserById(UUID id);
+    User getUserById(UUID id);
 
-    User findUserByEmail(String email);
+    User getUserByEmail(String email);
 
     void deleteUser(UUID id);
+
+    String authorizeUser(AuthorizeUserDto authorizeUserDto);
 }

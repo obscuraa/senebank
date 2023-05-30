@@ -1,6 +1,7 @@
 package com.group.senebank.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,9 +17,10 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(schema = "public", name = "account")
+@Table(name = "account")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account {
@@ -26,8 +28,10 @@ public class Account {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     @Column(name = "is_overdraft")
     private boolean isOverdraft;
+
     @Column(name = "balance")
     private int balance;
 
@@ -35,5 +39,5 @@ public class Account {
     private User user;
 
     @OneToMany(mappedBy = "sourceAccount")
-    private List<Transaction> transactionList;
+    private List<Transaction> transactions;
 }

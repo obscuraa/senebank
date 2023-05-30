@@ -1,40 +1,46 @@
 package com.group.senebank.service.impl;
 
+import com.group.senebank.exception.NotFoundException;
 import com.group.senebank.model.Account;
-import com.group.senebank.model.User;
 import com.group.senebank.repository.AccountRepository;
 import com.group.senebank.service.AccountService;
 import com.group.senebank.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.group.senebank.config.ErrorMessages.ACCOUNT_ERROR_MESSAGE;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserService userService;
 
     @Override
-    public Account getAccount(int id) {
-        return accountRepository.findById(id).orElseThrow(() -> new IllegalStateException("Account not found by ID"));
+    public Account getAccountById(int id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ACCOUNT_ERROR_MESSAGE, id));
     }
 
     @Override
     public Account addAccount(UUID userId) {
-        User user = userService.findUserById(userId);
-        Account account = new Account();
-        account.setOverdraft(false);
-        account.setBalance(0);
-        account.setUser(user);
-        return accountRepository.save(account);
+        return accountRepository.save(
+                Account.builder()
+                        .isOverdraft(false)
+                        .balance(0)
+                        .user(userService.getUserById(userId))
+                        .build()
+        );
     }
 
     @Override
     public void deleteAccount(int id) {
         if(!accountRepository.existsById(id)){
-            throw new IllegalStateException("Account id " + id + "not found");
+            throw new NotFoundException(ACCOUNT_ERROR_MESSAGE, id);
         }
         accountRepository.deleteById(id);
     }

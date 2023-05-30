@@ -1,6 +1,7 @@
 package com.group.senebank.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,16 +15,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(schema = "public", name = "transaction")
+@Table(name = "transaction")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     @Column(name = "payload")
     private String payload;
 
@@ -32,6 +36,7 @@ public class Transaction {
 
     @ManyToOne
     private Account sourceAccount;
+
     @ManyToOne
     private Account targetAccount;
 }
