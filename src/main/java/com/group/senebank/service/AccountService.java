@@ -9,5 +9,5 @@ public interface AccountService {
 
     Account addAccount(UUID userId);
 
-    void deleteAccount(int id);
+    void closeAccount(int id);
 }

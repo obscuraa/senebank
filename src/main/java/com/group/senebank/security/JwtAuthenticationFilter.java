@@ -1,7 +1,7 @@
 package com.group.senebank.security;
 
 import com.group.senebank.service.UserService;
-import com.group.senebank.service.impl.TokenService;
+import com.group.senebank.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,20 +24,17 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    TokenService tokenService;
-
-    @Autowired
     UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
         try {
-            if (StringUtils.hasText(token) && tokenService.validateToken(token)) {
-                String email = tokenService.getEmailFromToken(token);
+            if (StringUtils.hasText(token) && TokenUtils.validateToken(token)) {
+                String email = TokenUtils.getEmailFromToken(token);
                 var user = userService.getUserByEmail(email);
 
-                String role = tokenService.getRoleFromToken(token);
+                String role = TokenUtils.getRoleFromToken(token);
                 var authorities = List.of(new SimpleGrantedAuthority(role));
 
                 UserDetails userDetails = new User(user.getEmail(), user.getPassword(), authorities);

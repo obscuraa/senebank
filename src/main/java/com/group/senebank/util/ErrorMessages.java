@@ -1,4 +1,4 @@
-package com.group.senebank.config;
+package com.group.senebank.util;
 
 public class ErrorMessages {
     public static final String ACCOUNT_ERROR_MESSAGE = "Account with id = %s not found";

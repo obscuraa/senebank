@@ -7,15 +7,17 @@ import com.group.senebank.mapper.UsersMapper;
 import com.group.senebank.model.User;
 import com.group.senebank.repository.UsersRepository;
 import com.group.senebank.service.UserService;
+import com.group.senebank.util.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static com.group.senebank.config.ErrorMessages.USER_NOT_FOUND_BY_EMAIL;
+import static com.group.senebank.util.ErrorMessages.USER_NOT_FOUND_BY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +25,11 @@ import static com.group.senebank.config.ErrorMessages.USER_NOT_FOUND_BY_EMAIL;
 public class UserServiceImpl implements UserService {
     private final UsersRepository usersRepository;
     private final UsersMapper usersMapper;
-    private final TokenService tokenService;
 
     @Override
     public User registerUser(CreateUserDto createUserDto, HttpServletResponse response) {
         User user = usersMapper.createDtoToEntity(createUserDto);
+        user.setRegistrationDate(LocalDateTime.now());
         response.addHeader("Authorization", generateJwt(createUserDto.getEmail(), createUserDto.getRole()));
         return usersRepository.save(user);
     }
@@ -60,6 +62,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String generateJwt(String email, String role) {
-        return "Bearer " + tokenService.generateToken(email, role);
+        return "Bearer " + TokenUtils.generateToken(email, role);
     }
 }

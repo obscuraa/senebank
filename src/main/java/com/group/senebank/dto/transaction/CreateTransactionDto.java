@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class CreateTransactionDto {
-    private int id;
-    private String payload;
+    private int sourceAccountId;
+    private int targetAccountId;
+    private int cash;
 }

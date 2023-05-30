@@ -19,7 +19,7 @@ public class AdminController {
     private final TransactionService transactionService;
     private final TransactionMapper transactionMapper;
 
-    @GetMapping(path = "/transactionList")
+    @GetMapping(path = "/transactions")
     public List<FullTransactionDto> getTransactions() {
         return transactionMapper.toFullDtoList(transactionService.getTransactions());
     }

@@ -1,4 +1,4 @@
-package com.group.senebank.service.impl;
+package com.group.senebank.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -6,20 +6,18 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.experimental.UtilityClass;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-@Service
-public class TokenService {
+@UtilityClass
+public class TokenUtils {
 
-    @Value("${security.secret-key}")
-    String secretKey;
+    private final static String SECRET_KEY = "0630f070-a29d-4e79-a9f0-36fee6cbb666";
 
     public String generateToken(String email, String role) {
         Claims claims = Jwts.claims();
@@ -64,6 +62,6 @@ public class TokenService {
     }
 
     private byte[] convertSecretKeyToBase64() {
-        return Base64.encodeBase64(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Base64.encodeBase64(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 }

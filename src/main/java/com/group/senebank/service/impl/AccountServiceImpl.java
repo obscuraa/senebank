@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.group.senebank.config.ErrorMessages.ACCOUNT_ERROR_MESSAGE;
+import static com.group.senebank.util.ErrorMessages.ACCOUNT_ERROR_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount(int id) {
+    public void closeAccount(int id) {
         if(!accountRepository.existsById(id)){
             throw new NotFoundException(ACCOUNT_ERROR_MESSAGE, id);
         }

@@ -1,5 +1,6 @@
 package com.group.senebank.service.impl;
 
+import com.group.senebank.dto.transaction.CreateTransactionDto;
 import com.group.senebank.exception.SendTransactionException;
 import com.group.senebank.model.Transaction;
 import com.group.senebank.repository.TransactionRepository;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static com.group.senebank.config.ErrorMessages.ACCOUNT_SEND_TRANSACTION_ERROR_MESSAGE;
+import static com.group.senebank.util.ErrorMessages.ACCOUNT_SEND_TRANSACTION_ERROR_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +40,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction sendTransaction(int sourceId, int targetId, int cash) {
-        var sourceAccount = accountService.getAccountById(sourceId);
-        var targetAccount = accountService.getAccountById(targetId);
+    public Transaction sendTransaction(CreateTransactionDto createTransactionDto) {
+        var sourceAccount = accountService.getAccountById(createTransactionDto.getSourceAccountId());
+        var targetAccount = accountService.getAccountById(createTransactionDto.getTargetAccountId());
+
+        int cash = createTransactionDto.getCash();
 
         if(!sourceAccount.isOverdraft() && sourceAccount.getBalance() >= cash){
             sourceAccount.setBalance(sourceAccount.getBalance() - cash);
@@ -55,6 +58,6 @@ public class TransactionServiceImpl implements TransactionService {
                             .build()
             );
         }
-        throw new SendTransactionException(ACCOUNT_SEND_TRANSACTION_ERROR_MESSAGE, sourceId);
+        throw new SendTransactionException(ACCOUNT_SEND_TRANSACTION_ERROR_MESSAGE, createTransactionDto.getSourceAccountId());
     }
 }
