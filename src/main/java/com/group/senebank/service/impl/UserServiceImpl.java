@@ -1,11 +1,10 @@
 package com.group.senebank.service.impl;
 
+import com.group.senebank.dao.UserDao;
 import com.group.senebank.dto.users.AuthorizeUserDto;
 import com.group.senebank.dto.users.CreateUserDto;
-import com.group.senebank.exception.NotFoundException;
 import com.group.senebank.mapper.UsersMapper;
 import com.group.senebank.model.User;
-import com.group.senebank.repository.UsersRepository;
 import com.group.senebank.service.UserService;
 import com.group.senebank.util.TokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.UUID;
-
-import static com.group.senebank.util.ErrorMessages.USER_NOT_FOUND_BY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
-    private final UsersRepository usersRepository;
+    private final UserDao userDao;
     private final UsersMapper usersMapper;
 
     @Override
@@ -31,33 +27,27 @@ public class UserServiceImpl implements UserService {
         User user = usersMapper.createDtoToEntity(createUserDto);
         user.setRegistrationDate(LocalDateTime.now());
         response.addHeader("Authorization", generateJwt(createUserDto.getEmail(), createUserDto.getRole()));
-        return usersRepository.save(user);
+        return userDao.saveUser(user);
     }
 
     @Override
     public User getUserById(UUID id) {
-        return usersRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User id " + id + " not found"));
+        return userDao.getUserById(id);
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return usersRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User email " + email + " not found"));
+        return userDao.findUserByEmail(email);
     }
 
     @Override
     public void deleteUser(UUID id) {
-        if(!usersRepository.existsById(id)){
-            throw new NoSuchElementException("User id " + id + "not found");
-        }
-        usersRepository.deleteById(id);
+        userDao.deleteUserById(id);
     }
 
     @Override
     public String authorizeUser(AuthorizeUserDto authorizeUserDto) {
-        User user = usersRepository.findByEmail(authorizeUserDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL, authorizeUserDto.getEmail()));
+        User user = userDao.findUserByEmail(authorizeUserDto.getEmail());
         return generateJwt(user.getEmail(), user.getRole());
     }
 

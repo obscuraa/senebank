@@ -1,8 +1,7 @@
 package com.group.senebank.service.impl;
 
-import com.group.senebank.exception.NotFoundException;
+import com.group.senebank.dao.AccountDao;
 import com.group.senebank.model.Account;
-import com.group.senebank.repository.AccountRepository;
 import com.group.senebank.service.AccountService;
 import com.group.senebank.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,24 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.group.senebank.util.ErrorMessages.ACCOUNT_ERROR_MESSAGE;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AccountServiceImpl implements AccountService {
-    private final AccountRepository accountRepository;
+    private final AccountDao accountDao;
     private final UserService userService;
 
     @Override
     public Account getAccountById(int id) {
-        return accountRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ACCOUNT_ERROR_MESSAGE, id));
+        return accountDao.findById(id);
     }
 
     @Override
     public Account addAccount(UUID userId) {
-        return accountRepository.save(
+        return accountDao.saveAccount(
                 Account.builder()
                         .isOverdraft(false)
                         .balance(0)
@@ -39,9 +35,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void closeAccount(int id) {
-        if(!accountRepository.existsById(id)){
-            throw new NotFoundException(ACCOUNT_ERROR_MESSAGE, id);
-        }
-        accountRepository.deleteById(id);
+        accountDao.deleteById(id);
     }
 }
